@@ -1,0 +1,19 @@
+import 'dart:async';
+
+import 'package:flashlight/components/alert_message.dart';
+import 'package:flashlight/components/loading_indicator.dart';
+import 'package:flashlight/data/preference/preference.dart';
+import 'package:flashlight/generated/l10n.dart';
+import 'package:flashlight/resource/resource.dart';
+import 'package:flashlight/utils/enums.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+part 'base/base_provider.dart';
+part 'extensions/build_context_ext.dart';
+part 'extensions/color_ext.dart';
+part 'extensions/int_ext.dart';
+part 'extensions/string_ext.dart';
+part 'helper/loading_helper.dart';
+part 'helper/alert_helper.dart';
+part 'base/localization_provider.dart';

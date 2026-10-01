@@ -1,0 +1,176 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Incoming call -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- Incoming SMS -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
+    <!-- Flashlight / Overlay -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+
+    <!-- Foreground service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- Special-use foreground service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <!-- Notifications for Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Camera & Flash for OEM device compatibility -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+
+    <application
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:label="flashlight">
+
+        <!-- ========================================================= -->
+        <!-- Main Flutter Activity -->
+        <!-- ========================================================= -->
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:windowSoftInputMode="adjustResize">
+
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+
+        <!-- ========================================================= -->
+        <!-- Overlay Guide Activity -->
+        <!-- ========================================================= -->
+
+        <activity
+            android:name=".OverlayGuideActivity"
+            android:exported="false"
+            android:theme="@style/OverlayGuideTheme" />
+
+
+        <!-- ========================================================= -->
+        <!-- Overlay Guide Service -->
+        <!-- ========================================================= -->
+
+        <service
+            android:name=".OverlayGuideService"
+            android:exported="false" />
+
+
+        <!-- ========================================================= -->
+        <!-- Incoming Calls -->
+        <!-- ========================================================= -->
+
+        <receiver
+            android:name=".CallReceiver"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+
+        </receiver>
+
+
+        <!-- ========================================================= -->
+        <!-- Incoming SMS -->
+        <!-- ========================================================= -->
+
+        <receiver
+            android:name=".SmsReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_SMS">
+
+            <intent-filter android:priority="999">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+
+        </receiver>
+
+        <!-- ========================================================= -->
+        <!-- Other Apps' Notifications -->
+        <!-- ========================================================= -->
+
+        <service
+            android:name=".NotificationListener"
+            android:exported="true"
+            android:label="Flashlight"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+
+        </service>
+
+        <service
+            android:name=".ShakeService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Continuous accelerometer monitoring for shake-based flashlight control" />
+
+        </service>
+
+        <service
+            android:name=".CallFlashService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Flashing the camera light for incoming phone calls" />
+
+        </service>
+
+
+        <!-- ========================================================= -->
+        <!-- Flutter -->
+        <!-- ========================================================= -->
+
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+    </application>
+
+
+    <!-- ============================================================= -->
+    <!-- Queries -->
+    <!-- ============================================================= -->
+
+    <queries>
+
+        <!-- Query launcher apps for notification flash app selection (Android 11+) -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
+        </intent>
+
+    </queries>
+
+</manifest>
