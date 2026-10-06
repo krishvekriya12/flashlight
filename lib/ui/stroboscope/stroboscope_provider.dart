@@ -51,6 +51,8 @@ final class StroboscopeProvider extends BaseProvider {
       return;
     }
 
+    FlashLightSosProvider.stopRunningSos();
+
     isFlashOn = true;
     isStroboscopeRunning = true;
     WakelockPlus.enable();
@@ -77,9 +79,6 @@ final class StroboscopeProvider extends BaseProvider {
   }
 
   void changeFlashInterval(double value) {
-    if (!isFlashOn) {
-      return;
-    }
     flashInterval = value;
     notifyListeners();
   }
@@ -98,11 +97,19 @@ final class StroboscopeProvider extends BaseProvider {
         await Future.delayed(Duration(milliseconds: half));
       } catch (e) {
         debugPrint('Stroboscope error: $e');
+        if (_session == currentSession) {
+          isFlashOn = false;
+          isStroboscopeRunning = false;
+          WakelockPlus.disable();
+          notifyListeners();
+        }
         break;
       }
     }
-    try {
-      await _torchChannel.invokeMethod('turnOff');
-    } catch (_) {}
+    if (_session == currentSession) {
+      try {
+        await _torchChannel.invokeMethod('turnOff');
+      } catch (_) {}
+    }
   }
 }

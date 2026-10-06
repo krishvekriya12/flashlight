@@ -9,6 +9,11 @@ import android.os.Looper
 object FlashlightController {
 
     private var cameraId: String? = null
+    private var torchOn = false
+    private var torchCommandVersion = 0L
+    private var pendingFlashes = 0
+    private var restoreTorchOn = false
+    private var flashCommandVersion = 0L
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -86,11 +91,16 @@ object FlashlightController {
     // BASIC FLASHLIGHT
     // =========================================================
 
+    @Synchronized
     fun setFlashlight(
         context: Context,
         enabled: Boolean
-    ) {
+    ): Boolean {
+        torchCommandVersion++
+        return setTorchMode(context, enabled)
+    }
 
+    private fun setTorchMode(context: Context, enabled: Boolean): Boolean {
         try {
 
             val cameraManager =
@@ -100,17 +110,30 @@ object FlashlightController {
             val id = getCameraId(context)
 
             if (id == null) {
-                return
+                return false
             }
 
             cameraManager.setTorchMode(
                 id,
                 enabled
             )
+            torchOn = enabled
+            return true
 
         } catch (e: Exception) {
             e.printStackTrace()
+            return false
         }
+    }
+
+    @Synchronized
+    fun onTorchModeChanged(context: Context, changedCameraId: String, enabled: Boolean): Boolean {
+        if (changedCameraId != getCameraId(context)) return false
+        if (torchOn != enabled) {
+            torchOn = enabled
+            torchCommandVersion++
+        }
+        return true
     }
 
     // =========================================================
@@ -123,18 +146,26 @@ object FlashlightController {
         onComplete: (() -> Unit)? = null
     ) {
         val delay = duration ?: FlashAlertPreferences.getOnLength(context)
-        setFlashlight(
-            context,
-            true
-        )
+        handler.post {
+            synchronized(this) {
+                if (pendingFlashes == 0) {
+                    restoreTorchOn = torchOn
+                    flashCommandVersion = torchCommandVersion
+                }
+                pendingFlashes++
+                setTorchMode(context, true)
+            }
 
-        handler.postDelayed({
-            setFlashlight(
-                context,
-                false
-            )
-            onComplete?.invoke()
-        }, delay)
+            handler.postDelayed({
+                synchronized(this) {
+                    pendingFlashes--
+                    if (pendingFlashes == 0 && flashCommandVersion == torchCommandVersion) {
+                        setTorchMode(context, restoreTorchOn)
+                    }
+                }
+                onComplete?.invoke()
+            }, delay)
+        }
     }
 
     // =========================================================

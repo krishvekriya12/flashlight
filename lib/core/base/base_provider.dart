@@ -42,9 +42,8 @@ abstract base class BaseProvider extends ChangeNotifier {
     switch (error) {
       default:
         context.showErrorMessage(
-          title: "somethingWentWrong",
-          content:
-              "anUnknownErrorHasOccurredPleaseTryAgainLater",
+          title: "Something went wrong",
+          content: "An unknown error occurred. Please try again later.",
         );
     }
     return null;

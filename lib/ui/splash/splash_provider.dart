@@ -3,8 +3,6 @@ part of 'splash.dart';
 final class SplashProvider extends BaseProvider {
   SplashProvider({required super.context});
 
-  final MethodChannel _settingsChannel = const MethodChannel('flashlight/settings');
-
   bool isLoading = true;
   String appVersion = '1.0.0';
 
@@ -21,12 +19,6 @@ final class SplashProvider extends BaseProvider {
       appVersion = info.version;
       notifyListeners();
     } catch (_) {}
-  }
-
-  Future<bool> hasOverlayPermission() async {
-    final result = await _settingsChannel.invokeMethod<bool>('hasOverlayPermission');
-    debugPrint('Native overlay permission: $result');
-    return result ?? false;
   }
 
   Future<void> navigate() async {

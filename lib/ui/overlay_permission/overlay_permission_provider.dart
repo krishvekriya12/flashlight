@@ -21,18 +21,16 @@ final class OverlayPermissionProvider extends BaseProvider with WidgetsBindingOb
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!_settingsOpened) return;
-
     if (state == AppLifecycleState.resumed) {
       _settingsOpened = false;
-
       _handleSettingsReturn();
     }
   }
 
   Future<void> _handleSettingsReturn() async {
+    WidgetsBinding.instance.removeObserver(this);
     if (!context.mounted) return;
     context.navigator.pushNamedAndRemoveUntil(DashboardScreen.routeName, (route) => false);
-    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override

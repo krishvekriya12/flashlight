@@ -33,9 +33,7 @@ final class DashboardProvider extends BaseProvider {
     if (_startupFlashUsed) {
       return;
     }
-    final prefs = await SharedPreferences.getInstance();
-    final turnOnAtStartup =
-        prefs.getBool('turn_on_flashlight') ?? false;
+    final turnOnAtStartup = preference.prefs?.getBool('turn_on_flashlight') ?? false;
 
     if (!turnOnAtStartup) {
       return;

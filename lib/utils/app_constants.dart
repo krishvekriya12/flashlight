@@ -1,6 +1,6 @@
 abstract interface class AppConstant {
   static const String appVersion = "1.0.0";
-  static const String packageName = "com.example.flashlight";
+  static const String packageName = "com.flashlight.flashlight";
   static const String playStoreUrl = "https://play.google.com/store/apps/details?id=$packageName";
   static const String privacyPolicyUrl = "https://sites.google.com/view/flashlight-privacy-policy";
   static const List<int> screenLightPresets = [

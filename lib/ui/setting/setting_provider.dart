@@ -10,8 +10,7 @@ final class SettingProvider extends BaseProvider {
   }
 
   Future<void> _loadSetting() async {
-    final prefs = await SharedPreferences.getInstance();
-    isTurnOnFlash = prefs.getBool(turnOnFlashKey) ?? false;
+    isTurnOnFlash = preference.prefs?.getBool(turnOnFlashKey) ?? false;
     try {
       final info = await PackageInfo.fromPlatform();
       appVersion = info.version;
@@ -19,13 +18,9 @@ final class SettingProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future<void> toggleTurnOnFlash() async {
+  void toggleTurnOnFlash() {
     isTurnOnFlash = !isTurnOnFlash;
     notifyListeners();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(
-      turnOnFlashKey,
-      isTurnOnFlash,
-    );
+    preference.prefs?.setBool(turnOnFlashKey, isTurnOnFlash);
   }
 }

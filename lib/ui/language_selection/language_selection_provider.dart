@@ -9,7 +9,11 @@ final class LanguageSelectionProvider extends BaseProvider {
   void initState() {
     super.initState();
     languages = AppLanguage.values;
-    startHintAnimation();
+    if (Preference().languageSelected) {
+      selectedLanguage = Preference().appLanguage;
+    } else {
+      startHintAnimation();
+    }
   }
 
   List<AppLanguage> languages = [];
@@ -21,6 +25,7 @@ final class LanguageSelectionProvider extends BaseProvider {
 
   Future<void> continueNavigation() async {
     if (isLoading) return;
+    if (selectedLanguage == null) return;
     isLoading = true;
     notifyListeners();
     if (isSetting == true) {

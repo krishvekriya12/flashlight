@@ -49,29 +49,7 @@ final class ScreenLightProvider extends BaseProvider {
     _applyBrightness(brightness);
   }
 
-  // void onToggleControls() {
-  //   showControls = !showControls;
-  //   // Controls visible = bottom nav hidden.
-  //   // Controls hidden = bottom nav visible.
-  //   showBottomNav = !showControls;
-  //
-  //   notifyListeners();
-  // }
-  //
-  // void selectTab(int index) {
-  //   selectedIndex = index;
-  //   showControls = true;
-  //
-  //   if (index == 1) {
-  //     showBottomNav = false;
-  //     _startBlink();
-  //   } else {
-  //     showBottomNav = true;
-  //     _stopBlink();
-  //   }
-  //
-  //   notifyListeners();
-  // }
+
 
   void _stopBlink() {
     _blinkTimer?.cancel();

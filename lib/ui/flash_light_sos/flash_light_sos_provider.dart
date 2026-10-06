@@ -120,7 +120,7 @@ final class FlashLightSosProvider extends BaseProvider {
     int index = 0;
     bool? currentTorchOn;
 
-    _sosTimer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
+    _sosTimer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
       if (!isSosRunning) {
         timer.cancel();
         return;
@@ -134,11 +134,9 @@ final class FlashLightSosProvider extends BaseProvider {
 
       if (shouldFlash != currentTorchOn) {
         currentTorchOn = shouldFlash;
-        try {
-          await _torchChannel.invokeMethod(shouldFlash ? 'turnOn' : 'turnOff');
-        } catch (e) {
+        _torchChannel.invokeMethod(shouldFlash ? 'turnOn' : 'turnOff').catchError((e) {
           debugPrint('SOS flashlight error: $e');
-        }
+        });
       }
 
       index++;

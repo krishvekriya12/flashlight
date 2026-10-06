@@ -96,16 +96,8 @@ class CallReceiver : BroadcastReceiver() {
             TelephonyManager.EXTRA_STATE_IDLE -> {
 
                 try {
-                    val serviceIntent =
-                        Intent(
-                            context,
-                            CallFlashService::class.java
-                        ).apply {
-                            action =
-                                CallFlashService.ACTION_STOP
-                        }
-
-                    context.startService(serviceIntent)
+                    val serviceIntent = Intent(context, CallFlashService::class.java)
+                    context.stopService(serviceIntent)
                 } catch (e: Exception) {
                     android.util.Log.e("CallReceiver", "Could not stop CallFlashService: ${e.message}")
                 }

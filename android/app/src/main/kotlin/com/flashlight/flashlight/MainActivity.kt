@@ -14,6 +14,7 @@ class MainActivity : FlutterActivity() {
     private val SETTINGS_CHANNEL = "flashlight/settings"
 
     private lateinit var cameraManager: CameraManager
+    private var torchCallback: CameraManager.TorchCallback? = null
 
     override fun configureFlutterEngine(
         flutterEngine: FlutterEngine
@@ -35,21 +36,23 @@ class MainActivity : FlutterActivity() {
             when (call.method) {
 
                 "turnOn" -> {
-                    FlashlightController.setFlashlight(
+                    val succeeded = FlashlightController.setFlashlight(
                         this,
                         true
                     )
 
-                    result.success(null)
+                    if (succeeded) result.success(null)
+                    else result.error("TORCH_UNAVAILABLE", "Could not turn on flashlight", null)
                 }
 
                 "turnOff" -> {
-                    FlashlightController.setFlashlight(
+                    val succeeded = FlashlightController.setFlashlight(
                         this,
                         false
                     )
 
-                    result.success(null)
+                    if (succeeded) result.success(null)
+                    else result.error("TORCH_UNAVAILABLE", "Could not turn off flashlight", null)
                 }
 
                 else -> {
@@ -62,8 +65,7 @@ class MainActivity : FlutterActivity() {
         // Listen for real flashlight state changes
         // -------------------------------------------------------------
 
-        cameraManager.registerTorchCallback(
-            object : CameraManager.TorchCallback() {
+        torchCallback = object : CameraManager.TorchCallback() {
 
                 override fun onTorchModeChanged(
                     cameraId: String,
@@ -73,6 +75,10 @@ class MainActivity : FlutterActivity() {
                         cameraId,
                         enabled
                     )
+
+                    if (!FlashlightController.onTorchModeChanged(this@MainActivity, cameraId, enabled)) {
+                        return
+                    }
 
                     runOnUiThread {
                         MethodChannel(
@@ -84,9 +90,8 @@ class MainActivity : FlutterActivity() {
                         )
                     }
                 }
-            },
-            null
-        )
+            }
+        cameraManager.registerTorchCallback(torchCallback!!, null)
 
         // -------------------------------------------------------------
         // Settings
@@ -191,48 +196,6 @@ class MainActivity : FlutterActivity() {
                     )
                 }
 
-// -----------------------------------------------------
-// Call Flash Mode
-// -----------------------------------------------------
-
-                // -----------------------------------------------------
-// Call Flash Mode
-// -----------------------------------------------------
-
-//                "setCallFlashMode" -> {
-//
-//                    val mode =
-//                        call.argument<String>("mode")
-//
-//                    val enabled =
-//                        call.argument<Boolean>("enabled") ?: false
-//
-//                    when (mode) {
-//
-//                        "ring" -> {
-//                            FlashAlertPreferences.setCallFlashRing(
-//                                this,
-//                                enabled
-//                            )
-//                        }
-//
-//                        "vibrate" -> {
-//                            FlashAlertPreferences.setCallFlashVibrate(
-//                                this,
-//                                enabled
-//                            )
-//                        }
-//
-//                        "silent" -> {
-//                            FlashAlertPreferences.setCallFlashSilent(
-//                                this,
-//                                enabled
-//                            )
-//                        }
-//                    }
-//
-//                    result.success(null)
-//                }
 
 
                 "setShakeEnabled" -> {
@@ -260,18 +223,6 @@ class MainActivity : FlutterActivity() {
                     FlashAlertPreferences.setNotificationEnabled(
                         this,
                         enabled
-                    )
-
-                    android.util.Log.d(
-                        "NOTIFICATION_FLASH",
-                        "SET ENABLED = $enabled"
-                    )
-
-                    android.util.Log.d(
-                        "NOTIFICATION_FLASH",
-                        "STORED ENABLED = ${
-                            FlashAlertPreferences.isNotificationEnabled(this)
-                        }"
                     )
 
                     result.success(null)
@@ -430,5 +381,11 @@ class MainActivity : FlutterActivity() {
             )
 
         stopService(intent)
+    }
+
+    override fun onDestroy() {
+        torchCallback?.let(cameraManager::unregisterTorchCallback)
+        torchCallback = null
+        super.onDestroy()
     }
 }

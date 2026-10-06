@@ -19,7 +19,6 @@ Future<void> bootstrap(AsyncWidgetBuilder builder) async {
     (error, stackTrace) {
       debugPrint(error.toString());
       debugPrint(stackTrace.toString());
-      throw error;
     },
   );
 }
@@ -31,15 +30,10 @@ Future<void> _configureSystemUi() async {
   ]);
 
   SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
+    const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light,
-      systemNavigationBarColor: Colors.white,
       systemStatusBarContrastEnforced: false,
-      systemNavigationBarContrastEnforced: true,
+      systemNavigationBarContrastEnforced: false,
     ),
   );
 }

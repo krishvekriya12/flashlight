@@ -6,7 +6,8 @@ class AppModeScreen extends StatelessWidget {
   static const String routeName = '/app_mode';
 
   static Widget builder(BuildContext context) {
-    return  AppModeScreen();
+    context.read<AppModeProvider>().syncSelection();
+    return const AppModeScreen();
   }
 
   @override

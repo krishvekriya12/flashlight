@@ -351,7 +351,7 @@ final class FlashAlertProvider extends BaseProvider with WidgetsBindingObserver 
     }
   }
 
-  bool isTestOnSelected = false;
+  bool? isTestOnSelected;
 
   void selectTestOn(bool value) {
     isTestOnSelected = value;

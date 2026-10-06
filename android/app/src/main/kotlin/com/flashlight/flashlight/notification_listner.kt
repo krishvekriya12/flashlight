@@ -18,21 +18,6 @@ class NotificationListener : NotificationListenerService() {
         val selectedApps =
             FlashAlertPreferences.getSelectedNotificationApps(this)
 
-        android.util.Log.d(
-            "NOTIFICATION_FLASH",
-            "PACKAGE = $packageName"
-        )
-
-        android.util.Log.d(
-            "NOTIFICATION_FLASH",
-            "ENABLED = $notificationEnabled"
-        )
-
-        android.util.Log.d(
-            "NOTIFICATION_FLASH",
-            "SELECTED = $selectedApps"
-        )
-
         if (!notificationEnabled) return
 
         // Ignore our own notifications
@@ -42,11 +27,6 @@ class NotificationListener : NotificationListenerService() {
         if (sbn.isOngoing) return
 
         if (!selectedApps.contains(packageName)) return
-
-        android.util.Log.d(
-            "NOTIFICATION_FLASH",
-            "FLASHING $packageName"
-        )
 
         FlashlightController.flash(this)
     }

@@ -36,9 +36,9 @@ final class PermissionsProvider extends BaseProvider with WidgetsBindingObserver
   }
 
   Future<void> _handleSettingsReturn() async {
+    WidgetsBinding.instance.removeObserver(this);
     if (!context.mounted) return;
     context.navigator.pushNamedAndRemoveUntil(DashboardScreen.routeName, (route) => false);
-    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override

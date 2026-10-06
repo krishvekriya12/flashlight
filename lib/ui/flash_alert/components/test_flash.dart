@@ -4,7 +4,7 @@ class _TestFlash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTestOnSelected = context.select<FlashAlertProvider, bool>(
+    final isTestOnSelected = context.select<FlashAlertProvider, bool?>(
           (value) => value.isTestOnSelected,
     );
     final isTestingFlash = context.select<FlashAlertProvider, bool>(
@@ -59,7 +59,7 @@ class _TestFlash extends StatelessWidget {
             Expanded(
               child: _TestFlashButton(
                 text: context.l10n.testOn,
-                isSelected: isTestOnSelected,
+                isSelected: isTestOnSelected == true,
                 isLoading: isTestingFlash,
                 onTap: () {
                   provider.selectTestOn(true);
@@ -71,7 +71,7 @@ class _TestFlash extends StatelessWidget {
             Expanded(
               child: _TestFlashButton(
                 text: context.l10n.testOff,
-                isSelected: !isTestOnSelected,
+                isSelected: isTestOnSelected == false,
                 isLoading: isTestingFlash,
                 onTap: () {
                   provider.selectTestOn(false);
