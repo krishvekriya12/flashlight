@@ -209,7 +209,11 @@ class MainActivity : FlutterActivity() {
                     )
 
                     if (enabled) {
-                        startShakeService()
+                        if (!startShakeService()) {
+                            FlashAlertPreferences.setShakeEnabled(this, false)
+                            result.error("SHAKE_SERVICE_UNAVAILABLE", "Could not start shake detection", null)
+                            return@setMethodCallHandler
+                        }
                     } else {
                         stopShakeService()
                     }
@@ -350,11 +354,13 @@ class MainActivity : FlutterActivity() {
                         )
                     }
                 }
+
+                else -> result.notImplemented()
             }
         }
     }
 
-    private fun startShakeService() {
+    private fun startShakeService(): Boolean {
 
         val intent =
             Intent(
@@ -362,13 +368,16 @@ class MainActivity : FlutterActivity() {
                 ShakeService::class.java
             )
 
-        if (
-            Build.VERSION.SDK_INT >=
-            Build.VERSION_CODES.O
-        ) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
+            } else {
+                startService(intent)
+            }
+            true
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Could not start ShakeService", e)
+            false
         }
     }
 
@@ -381,6 +390,13 @@ class MainActivity : FlutterActivity() {
             )
 
         stopService(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (FlashAlertPreferences.isShakeEnabled(this)) {
+            startShakeService()
+        }
     }
 
     override fun onDestroy() {

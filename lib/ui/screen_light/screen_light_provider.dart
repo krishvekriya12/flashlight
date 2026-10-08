@@ -157,7 +157,11 @@ final class ScreenLightProvider extends BaseProvider {
 
   Future<void> _keepScreenOn(bool enabled) async {
     try {
-      await WakelockPlus.toggle(enable: enabled);
+      if (enabled) {
+        await AppWakeLock.acquire(this);
+      } else {
+        await AppWakeLock.release(this);
+      }
     } catch (e) {
       debugPrint(e.toString());
     }

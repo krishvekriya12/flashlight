@@ -17,6 +17,7 @@ final class FlashLightSosProvider extends BaseProvider {
     activeInstance = this;
 
     _torchChannel.setMethodCallHandler((call) async {
+      if (activeInstance != this) return;
       if (call.method != 'torchStateChanged') {
         return;
       }
@@ -31,9 +32,9 @@ final class FlashLightSosProvider extends BaseProvider {
     });
   }
 
-  static void stopRunningSos() {
+  static Future<void> stopRunningSos() async {
     if (activeInstance?.isSosRunning ?? false) {
-      activeInstance?.stopSos();
+      await activeInstance?.stopSos();
     }
   }
 
@@ -42,7 +43,7 @@ final class FlashLightSosProvider extends BaseProvider {
       await stopSos();
     }
     if (StroboscopeProvider.isStroboscopeRunning) {
-      StroboscopeProvider.stopRunningStrobe();
+      await StroboscopeProvider.stopRunningStrobe();
     }
     try {
       if (isFlashOn) {
@@ -68,7 +69,7 @@ final class FlashLightSosProvider extends BaseProvider {
       return;
     }
     if (StroboscopeProvider.isStroboscopeRunning) {
-      StroboscopeProvider.stopRunningStrobe();
+      await StroboscopeProvider.stopRunningStrobe();
     }
 
     _sosTimer?.cancel();
@@ -76,7 +77,7 @@ final class FlashLightSosProvider extends BaseProvider {
 
     isSosRunning = true;
     _ignoreTorchCallback = true;
-    WakelockPlus.enable();
+    unawaited(AppWakeLock.acquire(this));
 
     notifyListeners();
 
@@ -151,7 +152,7 @@ final class FlashLightSosProvider extends BaseProvider {
     isSosRunning = false;
     _sosTimer?.cancel();
     _sosTimer = null;
-    WakelockPlus.disable();
+    unawaited(AppWakeLock.release(this));
     notifyListeners();
     _ignoreTorchCallback = true;
 
@@ -162,21 +163,24 @@ final class FlashLightSosProvider extends BaseProvider {
     }
     _ignoreTorchCallback = false;
     isFlashOn = false;
-    notifyListeners();
+    if (context.mounted) notifyListeners();
   }
 
   @override
   void dispose() {
     if (activeInstance == this) {
       activeInstance = null;
+      _torchChannel.setMethodCallHandler(null);
     }
     _sosTimer?.cancel();
     _sosTimer = null;
     if (isSosRunning) {
-      WakelockPlus.disable();
+      unawaited(AppWakeLock.release(this));
     }
     if (isFlashOn || isSosRunning) {
-      _torchChannel.invokeMethod('turnOff');
+      _torchChannel.invokeMethod('turnOff').catchError((e) {
+        debugPrint('Flashlight dispose error: $e');
+      });
     }
     super.dispose();
   }

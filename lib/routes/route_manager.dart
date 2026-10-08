@@ -37,6 +37,9 @@ class AppRoutes {
       case PermissionsScreen.routeName:
         builder = PermissionsScreen.builder;
         break;
+      case PrivacyPolicyScreen.routeName:
+        builder = (_) => const PrivacyPolicyScreen();
+        break;
       case DashboardScreen.routeName:
         builder = DashboardScreen.builder;
         break;

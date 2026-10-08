@@ -15,10 +15,10 @@ final class DashboardProvider extends BaseProvider {
 
   Future<void> selectTab(int index) async {
     if (selectedIndex == 2 && index != 2) {
-      StroboscopeProvider.stopRunningStrobe();
+      await StroboscopeProvider.stopRunningStrobe();
     }
     if (selectedIndex == 1 && index != 1) {
-      FlashLightSosProvider.stopRunningSos();
+      await FlashLightSosProvider.stopRunningSos();
     }
 
     selectedIndex = index;

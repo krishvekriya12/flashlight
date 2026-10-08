@@ -89,7 +89,12 @@ final class FlashAlertProvider extends BaseProvider with WidgetsBindingObserver 
   }
 
   Future<void> toggleShakeToToggle(bool value) async {
-    await _settingsChannel.invokeMethod('setShakeEnabled', {'enabled': value});
+    try {
+      await _settingsChannel.invokeMethod('setShakeEnabled', {'enabled': value});
+    } catch (e) {
+      debugPrint('SHAKE SETTING ERROR: $e');
+      return;
+    }
 
     shakeToToggle = value;
 
@@ -108,6 +113,7 @@ final class FlashAlertProvider extends BaseProvider with WidgetsBindingObserver 
       if (settings == null) {
         return;
       }
+      if (!context.mounted) return;
 
       incomingCall = settings['call'] as bool? ?? false;
       incomingSms = settings['sms'] as bool? ?? false;
@@ -327,7 +333,7 @@ final class FlashAlertProvider extends BaseProvider with WidgetsBindingObserver 
       await _setFlashlight(false);
     } finally {
       _isTestingFlash = false;
-      notifyListeners();
+      if (context.mounted) notifyListeners();
     }
   }
 
@@ -347,7 +353,7 @@ final class FlashAlertProvider extends BaseProvider with WidgetsBindingObserver 
       await _setFlashlight(false);
     } finally {
       _isTestingFlash = false;
-      notifyListeners();
+      if (context.mounted) notifyListeners();
     }
   }
 

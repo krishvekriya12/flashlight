@@ -16,6 +16,7 @@ final class SplashProvider extends BaseProvider {
   Future<void> _loadAppInfo() async {
     try {
       final info = await PackageInfo.fromPlatform();
+      if (!context.mounted) return;
       appVersion = info.version;
       notifyListeners();
     } catch (_) {}
@@ -23,6 +24,7 @@ final class SplashProvider extends BaseProvider {
 
   Future<void> navigate() async {
     await Future.delayed(const Duration(milliseconds: 2400));
+    if (!context.mounted) return;
     isLoading = false;
     notifyListeners();
     await Future.delayed(const Duration(milliseconds: 300));

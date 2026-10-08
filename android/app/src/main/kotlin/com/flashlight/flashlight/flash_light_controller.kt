@@ -100,6 +100,11 @@ object FlashlightController {
         return setTorchMode(context, enabled)
     }
 
+    @Synchronized
+    fun toggleFlashlight(context: Context): Boolean {
+        return setFlashlight(context, !torchOn)
+    }
+
     private fun setTorchMode(context: Context, enabled: Boolean): Boolean {
         try {
 

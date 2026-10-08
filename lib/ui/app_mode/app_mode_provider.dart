@@ -15,8 +15,10 @@ final class AppModeProvider extends BaseProvider {
   }
 
   void syncSelection() {
-    selectedMode = themeMode;
-    notifyListeners();
+    if (selectedMode != themeMode) {
+      selectedMode = themeMode;
+      notifyListeners();
+    }
   }
 
   void applyTheme() {

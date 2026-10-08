@@ -43,8 +43,6 @@ class ShakeService : Service(), SensorEventListener {
 
     private var accelerometer: Sensor? = null
 
-    private var flashlightOn = false
-
     private var lastX = 0f
     private var lastY = 0f
     private var lastZ = 0f
@@ -87,20 +85,28 @@ class ShakeService : Service(), SensorEventListener {
         startId: Int
     ): Int {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(
-                NOTIFICATION_ID,
-                createNotification(),
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-            )
-        } else {
-            startForeground(
-                NOTIFICATION_ID,
-                createNotification()
-            )
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(
+                    NOTIFICATION_ID,
+                    createNotification(),
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                )
+            } else {
+                startForeground(NOTIFICATION_ID, createNotification())
+            }
+        } catch (e: RuntimeException) {
+            android.util.Log.e("ShakeService", "Could not start foreground service", e)
+            stopSelf(startId)
+            return START_NOT_STICKY
         }
 
-        return START_NOT_STICKY
+        if (accelerometer == null || !FlashAlertPreferences.isShakeEnabled(this)) {
+            stopSelf(startId)
+            return START_NOT_STICKY
+        }
+
+        return START_STICKY
     }
 
     override fun onSensorChanged(
@@ -259,13 +265,7 @@ class ShakeService : Service(), SensorEventListener {
 
     private fun toggleFlashlight() {
 
-        flashlightOn =
-            !flashlightOn
-
-        FlashlightController.setFlashlight(
-            this,
-            flashlightOn
-        )
+        FlashlightController.toggleFlashlight(this)
     }
 
     override fun onAccuracyChanged(

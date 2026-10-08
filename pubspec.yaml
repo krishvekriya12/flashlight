@@ -89,6 +89,7 @@ flutter:
 
 
   assets:
+    - assets/privacy_policy.md
     - assets/images/
     - assets/images/language/
     - assets/images/other_apps/

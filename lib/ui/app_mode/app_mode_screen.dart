@@ -6,7 +6,9 @@ class AppModeScreen extends StatelessWidget {
   static const String routeName = '/app_mode';
 
   static Widget builder(BuildContext context) {
-    context.read<AppModeProvider>().syncSelection();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AppModeProvider>().syncSelection();
+    });
     return const AppModeScreen();
   }
 

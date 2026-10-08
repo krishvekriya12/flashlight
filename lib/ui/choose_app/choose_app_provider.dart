@@ -78,7 +78,7 @@ final class ChooseAppProvider extends BaseProvider {
       debugPrint('LOAD APPS ERROR: $e');
     } finally {
       isLoading = false;
-      notifyListeners();
+      if (context.mounted) notifyListeners();
     }
   }
 

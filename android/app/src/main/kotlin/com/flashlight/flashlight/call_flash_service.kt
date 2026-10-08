@@ -25,6 +25,7 @@ class CallFlashService : Service() {
 
     private var flashlightOn = false
     private var isFlashing = false
+    private var foregroundStarted = false
 
     private val flashRunnable =
         object : Runnable {
@@ -59,17 +60,20 @@ class CallFlashService : Service() {
 
         createNotificationChannel()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(
-                NOTIFICATION_ID,
-                createNotification(),
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-            )
-        } else {
-            startForeground(
-                NOTIFICATION_ID,
-                createNotification()
-            )
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(
+                    NOTIFICATION_ID,
+                    createNotification(),
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                )
+            } else {
+                startForeground(NOTIFICATION_ID, createNotification())
+            }
+            foregroundStarted = true
+        } catch (e: RuntimeException) {
+            android.util.Log.e("CallFlashService", "Could not start foreground service", e)
+            stopSelf()
         }
     }
 
@@ -78,6 +82,11 @@ class CallFlashService : Service() {
         flags: Int,
         startId: Int
     ): Int {
+
+        if (!foregroundStarted) {
+            stopSelf(startId)
+            return START_NOT_STICKY
+        }
 
         when (intent?.action) {
 

@@ -19,11 +19,16 @@ class _AboutUS extends StatelessWidget {
         Gap(Spacing.medium),
         _SettingCell(
           onTap: () async {
-            await SharePlus.instance.share(ShareParams(text: "Download Flashlight App: https://play.google.com/store/apps/details?id=com.flashlight.flashlight"));
+            await SharePlus.instance.share(
+              ShareParams(
+                text:
+                    "Download Flashlight App: https://play.google.com/store/apps/details?id=com.flashlight.flashlight",
+              ),
+            );
           },
           child: Row(
             children: [
-              Icon(Icons.share,color: context.colorScheme.primary,size: 24,),
+              Icon(Icons.share, color: context.colorScheme.primary, size: 24),
               Gap(Spacing.medium),
               Text(
                 context.l10n.shareApp,
@@ -38,11 +43,18 @@ class _AboutUS extends StatelessWidget {
         Gap(Spacing.medium),
         _SettingCell(
           onTap: () {
-            CommonFunctions.openUrl(url: "https://play.google.com/store/apps/details?id=com.flashlight.flashlight");
+            CommonFunctions.openUrl(
+              url:
+                  "https://play.google.com/store/apps/details?id=com.flashlight.flashlight",
+            );
           },
           child: Row(
             children: [
-              Icon(Icons.star_rate_rounded,color: context.colorScheme.primary,size: 24,),
+              Icon(
+                Icons.star_rate_rounded,
+                color: context.colorScheme.primary,
+                size: 24,
+              ),
               Gap(Spacing.medium),
               Text(
                 context.l10n.rateUs,
@@ -57,11 +69,15 @@ class _AboutUS extends StatelessWidget {
         Gap(Spacing.medium),
         _SettingCell(
           onTap: () {
-            CommonFunctions.openUrl(url: "https://sites.google.com/view/flashlight-privacy-policy?pli=1&authuser=0");
+            context.navigator.pushNamed(PrivacyPolicyScreen.routeName);
           },
           child: Row(
             children: [
-              Icon(Icons.privacy_tip,color: context.colorScheme.primary,size: 22,),
+              Icon(
+                Icons.privacy_tip,
+                color: context.colorScheme.primary,
+                size: 22,
+              ),
               Gap(Spacing.medium),
               Text(
                 context.l10n.privacyPolicy,
@@ -80,7 +96,11 @@ class _AboutUS extends StatelessWidget {
           },
           child: Row(
             children: [
-              Icon(Icons.apps_rounded, color: context.colorScheme.primary, size: 24),
+              Icon(
+                Icons.apps_rounded,
+                color: context.colorScheme.primary,
+                size: 24,
+              ),
               Gap(Spacing.medium),
               Expanded(
                 child: Text(
@@ -99,7 +119,6 @@ class _AboutUS extends StatelessWidget {
             ],
           ),
         ),
-
       ],
     );
   }

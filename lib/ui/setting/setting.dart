@@ -4,6 +4,7 @@ import 'package:flashlight/resource/resource.dart';
 import 'package:flashlight/ui/app_mode/app_mode.dart';
 import 'package:flashlight/ui/language_selection/language_selection.dart';
 import 'package:flashlight/ui/more_apps/more_apps.dart';
+import 'package:flashlight/ui/privacy_policy/privacy_policy_screen.dart';
 import 'package:flashlight/utils/common_button.dart';
 import 'package:flashlight/utils/common_func.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
-
 
 part 'setting_provider.dart';
 part 'setting_screen.dart';

@@ -22,7 +22,9 @@ class PermissionsScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(right: Spacing.normal),
             child: CommonButton.cupertino(
-              onTap: () { _PermissionDialog.show(context: context); },
+              onTap: () {
+                _PermissionDialog.show(context: context);
+              },
               child: Container(
                 padding: EdgeInsets.all(Spacing.xSmall),
                 height: 20,
@@ -32,7 +34,7 @@ class PermissionsScreen extends StatelessWidget {
                   color: context.colorScheme.onSurface.withColorOpacity(.70),
                   borderRadius: ShapeBorderRadius.small,
                 ),
-                child: Assets.icons.icInfo.svg()
+                child: Assets.icons.icInfo.svg(),
               ),
             ),
           ),
@@ -95,7 +97,9 @@ class _Body extends StatelessWidget {
                     Gap(Spacing.xSmall),
                     CommonButton.cupertino(
                       onTap: () {
-                        CommonFunctions.openUrl(url: "https://sites.google.com/view/flashlight-privacy-policy?pli=1&authuser=0");
+                        context.navigator.pushNamed(
+                          PrivacyPolicyScreen.routeName,
+                        );
                       },
                       child: Text(
                         context.l10n.privacyPolicy,

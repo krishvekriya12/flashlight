@@ -17,9 +17,9 @@ final class StroboscopeProvider extends BaseProvider {
     activeInstance = this;
   }
 
-  static void stopRunningStrobe() {
+  static Future<void> stopRunningStrobe() async {
     if (isStroboscopeRunning) {
-      activeInstance?.stopStrobe();
+      await activeInstance?.stopStrobe();
     }
   }
 
@@ -31,9 +31,11 @@ final class StroboscopeProvider extends BaseProvider {
     _session++;
     isFlashOn = false;
     isStroboscopeRunning = false;
-    WakelockPlus.disable();
+    unawaited(AppWakeLock.release(this));
 
-    _torchChannel.invokeMethod('turnOff');
+    _torchChannel.invokeMethod('turnOff').catchError((e) {
+      debugPrint('Stroboscope dispose error: $e');
+    });
 
     super.dispose();
   }
@@ -51,12 +53,12 @@ final class StroboscopeProvider extends BaseProvider {
       return;
     }
 
-    FlashLightSosProvider.stopRunningSos();
+    await FlashLightSosProvider.stopRunningSos();
 
     isFlashOn = true;
     isStroboscopeRunning = true;
-    WakelockPlus.enable();
-    notifyListeners();
+    unawaited(AppWakeLock.acquire(this));
+    if (context.mounted) notifyListeners();
     _runStrobeLoop();
   }
 
@@ -67,7 +69,7 @@ final class StroboscopeProvider extends BaseProvider {
     _session++;
     isFlashOn = false;
     isStroboscopeRunning = false;
-    WakelockPlus.disable();
+    unawaited(AppWakeLock.release(this));
 
     try {
       await _torchChannel.invokeMethod('turnOff');
@@ -75,7 +77,7 @@ final class StroboscopeProvider extends BaseProvider {
       debugPrint('Stroboscope stop error: $e');
     }
 
-    notifyListeners();
+    if (context.mounted) notifyListeners();
   }
 
   void changeFlashInterval(double value) {
@@ -100,8 +102,8 @@ final class StroboscopeProvider extends BaseProvider {
         if (_session == currentSession) {
           isFlashOn = false;
           isStroboscopeRunning = false;
-          WakelockPlus.disable();
-          notifyListeners();
+          unawaited(AppWakeLock.release(this));
+          if (context.mounted) notifyListeners();
         }
         break;
       }
