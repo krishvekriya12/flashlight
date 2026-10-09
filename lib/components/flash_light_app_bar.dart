@@ -1,7 +1,6 @@
 import 'package:flashlight/core/core.dart';
 import 'package:flashlight/resource/resource.dart';
 import 'package:flashlight/utils/common_button.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -26,52 +25,57 @@ class FlashLightAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(64);
+  Size get preferredSize => const Size.fromHeight(AppDesign.navigationHeight);
 
   @override
   Widget build(BuildContext context) {
     final bool canGoBack = showBackButton ?? context.navigator.canPop();
 
     return Container(
-      decoration: BoxDecoration(color: showBgColour ? context.colorScheme.onPrimary : null),
+      decoration: BoxDecoration(
+        color: showBgColour ? context.colorScheme.onPrimary : null,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           AppBar(
+            toolbarHeight: AppDesign.navigationHeight,
             leading:
-            leading ??
+                leading ??
                 (canGoBack
                     ? CommonButton.cupertino(
-                  onTap:
-                  onBack ??
-                          () {
-                        context.navigator.pop();
-                      },
-                  child: Icon(
-                    CupertinoIcons.chevron_back,
-                    size: Spacing.xLarge,
-                    fontWeight: FontWeight.w500,
-                    color: context.colorScheme.onSurface,
-                  ),
-                )
+                        onTap:
+                            onBack ??
+                            () {
+                              context.navigator.pop();
+                            },
+                        child: Icon(
+                          Icons.arrow_back_rounded,
+                          size: Spacing.xLarge,
+                          fontWeight: FontWeight.w500,
+                          color: context.colorScheme.onSurface,
+                        ),
+                      )
                     : null),
-            leadingWidth: canGoBack ? 44 : 0,
+            leadingWidth: canGoBack ? AppDesign.touchTarget : 0,
             titleSpacing: canGoBack ? 4 : 16,
 
             automaticallyImplyLeading: canGoBack,
             centerTitle: false,
 
             title:
-            titleWidget ??
+                titleWidget ??
                 (title != null
                     ? Text(
-                  title!,
-                  style: context.textTheme.headlineMedium?.copyWith(
-                    color: context.colorScheme.onSurface,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: -0.2,
-                  ),
-                )
+                        title!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.textTheme.headlineSmall?.copyWith(
+                          color: context.colorScheme.onSurface,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: -0.2,
+                        ),
+                      )
                     : null),
 
             actions: actions,

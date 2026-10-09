@@ -7,14 +7,17 @@ class _LightControls extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.read<ScreenLightProvider>();
     return Container(
-      padding: EdgeInsets.only(top: context.padding.top + Spacing.normal,),
-      decoration: BoxDecoration(color: context.colorScheme.surfaceContainer, borderRadius: ShapeBorderRadius.large),
+      padding: EdgeInsets.only(top: context.padding.top + Spacing.normal),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainer,
+        borderRadius: ShapeBorderRadius.large,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Align(
-            alignment: AlignmentGeometry.topRight,
+            alignment: AlignmentDirectional.topEnd,
             child: CommonButton.cupertino(
               padding: EdgeInsets.only(right: Spacing.normal),
               onTap: provider.onToggleControls,
@@ -34,7 +37,10 @@ class _LightControls extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: Spacing.normal),
             child: _ColorPicker(),
           ),
-          Padding(padding: EdgeInsets.all(Spacing.normal), child: _BrightnessSlider()),
+          Padding(
+            padding: EdgeInsets.all(Spacing.normal),
+            child: _BrightnessSlider(),
+          ),
         ],
       ),
     );
@@ -46,7 +52,10 @@ class _ColorPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisSize: MainAxisSize.min, children: [_ColorArea(), Gap(Spacing.normal), _ColorSlider()]);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [_ColorArea(), Gap(Spacing.normal), _ColorSlider()],
+    );
   }
 }
 
@@ -56,19 +65,28 @@ class _ColorArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<ScreenLightProvider>();
-    final color = context.select<ScreenLightProvider, int>((value) => value.color);
+    final color = context.select<ScreenLightProvider, int>(
+      (value) => value.color,
+    );
     final hsvColor = HSVColor.fromColor(Color(color));
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = Size(constraints.maxWidth, constraints.maxWidth * 0.6);
         return GestureDetector(
-          onPanDown: (details) => provider.onColorChanged(_colorAt(details.localPosition, size, hsvColor)),
-          onPanUpdate: (details) => provider.onColorChanged(_colorAt(details.localPosition, size, hsvColor)),
+          onPanDown: (details) => provider.onColorChanged(
+            _colorAt(details.localPosition, size, hsvColor),
+          ),
+          onPanUpdate: (details) => provider.onColorChanged(
+            _colorAt(details.localPosition, size, hsvColor),
+          ),
           child: ClipRRect(
             borderRadius: ShapeBorderRadius.medium,
             child: CustomPaint(
               size: size,
-              painter: _ColorAreaPainter(hsvColor: hsvColor, pointerColor: context.colorScheme.onPrimary),
+              painter: _ColorAreaPainter(
+                hsvColor: hsvColor,
+                pointerColor: context.colorScheme.onPrimary,
+              ),
             ),
           ),
         );
@@ -79,7 +97,11 @@ class _ColorArea extends StatelessWidget {
   Color _colorAt(Offset position, Size size, HSVColor hsvColor) {
     final hue = (position.dx / size.width).clamp(0.0, 1.0) * 360;
     final saturation = (position.dy / size.height).clamp(0.0, 1.0);
-    return hsvColor.withHue(hue).withSaturation(saturation).withValue(1).toColor();
+    return hsvColor
+        .withHue(hue)
+        .withSaturation(saturation)
+        .withValue(1)
+        .toColor();
   }
 }
 
@@ -89,7 +111,9 @@ class _ColorSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<ScreenLightProvider>();
-    final color = context.select<ScreenLightProvider, int>((value) => value.color);
+    final color = context.select<ScreenLightProvider, int>(
+      (value) => value.color,
+    );
     final hsvColor = HSVColor.fromColor(Color(color));
     return SliderTheme(
       data: SliderTheme.of(context).copyWith(
@@ -101,7 +125,9 @@ class _ColorSlider extends StatelessWidget {
       ),
       child: Slider(
         value: 1 - hsvColor.saturation,
-        onChanged: (value) => provider.onColorChanged(hsvColor.withSaturation(1 - value).withValue(1).toColor()),
+        onChanged: (value) => provider.onColorChanged(
+          hsvColor.withSaturation(1 - value).withValue(1).toColor(),
+        ),
       ),
     );
   }
@@ -118,7 +144,10 @@ class _ColorAreaPainter extends CustomPainter {
     final rect = Offset.zero & size;
     final tintColor = HSVColor.fromAHSV(1, 0, 0, 1).toColor();
     final hueGradient = LinearGradient(
-      colors: List.generate(7, (index) => HSVColor.fromAHSV(1, index * 60, 1, 1).toColor()),
+      colors: List.generate(
+        7,
+        (index) => HSVColor.fromAHSV(1, index * 60, 1, 1).toColor(),
+      ),
     );
     final tintGradient = LinearGradient(
       begin: Alignment.topCenter,
@@ -128,7 +157,10 @@ class _ColorAreaPainter extends CustomPainter {
     canvas.drawRect(rect, Paint()..shader = hueGradient.createShader(rect));
     canvas.drawRect(rect, Paint()..shader = tintGradient.createShader(rect));
     canvas.drawCircle(
-      Offset(size.width * hsvColor.hue / 360, size.height * hsvColor.saturation),
+      Offset(
+        size.width * hsvColor.hue / 360,
+        size.height * hsvColor.saturation,
+      ),
       9,
       Paint()
         ..color = pointerColor
@@ -139,7 +171,8 @@ class _ColorAreaPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ColorAreaPainter oldDelegate) {
-    return oldDelegate.hsvColor != hsvColor || oldDelegate.pointerColor != pointerColor;
+    return oldDelegate.hsvColor != hsvColor ||
+        oldDelegate.pointerColor != pointerColor;
   }
 }
 
@@ -176,7 +209,10 @@ class _ColorSliderTrackShape extends RoundedRectSliderTrackShape {
       preferredRect.bottom,
     );
     final trackGradient = LinearGradient(
-      colors: [hsvColor.withSaturation(1).withValue(1).toColor(), hsvColor.withSaturation(0).withValue(1).toColor()],
+      colors: [
+        hsvColor.withSaturation(1).withValue(1).toColor(),
+        hsvColor.withSaturation(0).withValue(1).toColor(),
+      ],
     );
     context.canvas.drawRRect(
       RRect.fromRectAndRadius(trackRect, Radius.circular(trackRect.height / 2)),
@@ -228,13 +264,18 @@ class _BrightnessSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<ScreenLightProvider>();
-    final brightness = context.select<ScreenLightProvider, double>((value) => value.brightness);
+    final brightness = context.select<ScreenLightProvider, double>(
+      (value) => value.brightness,
+    );
     return Row(
       children: [
         Icon(Icons.sunny, color: context.colorScheme.onSurface),
         Gap(Spacing.normal),
         Expanded(
-          child: Slider(value: brightness, onChanged: provider.onBrightnessChanged),
+          child: Slider(
+            value: brightness,
+            onChanged: provider.onBrightnessChanged,
+          ),
         ),
       ],
     );

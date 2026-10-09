@@ -1,7 +1,7 @@
 import 'package:flashlight/components/flash_light_app_bar.dart';
 import 'package:flashlight/components/modal.dart';
 import 'package:flashlight/core/core.dart';
-import 'package:flashlight/generated/assets.gen.dart';
+
 import 'package:flashlight/resource/resource.dart';
 import 'package:flashlight/ui/components/shimmer_button.dart';
 import 'package:flashlight/ui/dashboard/dashboard.dart';

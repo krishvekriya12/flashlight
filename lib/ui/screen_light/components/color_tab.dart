@@ -1,4 +1,5 @@
 part of '../screen_light.dart';
+
 class _ColorTab extends StatelessWidget {
   const _ColorTab();
 
@@ -6,7 +7,8 @@ class _ColorTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.read<ScreenLightProvider>();
 
-    return CommonButton.cupertino(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: provider.onToggleControls,
       child: const Stack(children: [_LightSurface(), _ColorControls()]),
     );

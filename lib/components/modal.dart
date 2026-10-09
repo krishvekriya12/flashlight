@@ -2,7 +2,6 @@ import 'package:flashlight/core/core.dart';
 import 'package:flashlight/resource/resource.dart';
 import 'package:flutter/material.dart';
 
-
 Future<T?> showAppModal<T>({
   required BuildContext context,
   required WidgetBuilder builder,
@@ -10,7 +9,9 @@ Future<T?> showAppModal<T>({
   bool barrierDismissible = true,
   bool showDragHandle = false,
 }) async {
-  final maxHeight = maxBottomHeight ?? (context.height - kToolbarHeight - context.padding.top);
+  final maxHeight =
+      maxBottomHeight ??
+      (context.height - kToolbarHeight - context.padding.top);
   return await showModalBottomSheet(
     context: context,
     backgroundColor: context.colorScheme.surface,
@@ -19,7 +20,7 @@ Future<T?> showAppModal<T>({
       canPop: barrierDismissible,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: maxHeight),
-        child: builder(context),
+        child: SingleChildScrollView(child: builder(context)),
       ),
     ),
     isDismissible: barrierDismissible,
@@ -46,13 +47,19 @@ Future<T> showAppDialog<T>({
         child: Container(
           padding: EdgeInsets.all(Spacing.normal),
           decoration: BoxDecoration(
-             color: backgroundColor ?? context.colorScheme.surfaceContainer,
+            color: backgroundColor ?? context.colorScheme.surfaceContainer,
             borderRadius: ShapeBorderRadius.large,
             boxShadow: backgroundColor == Colors.transparent
                 ? []
-                : [BoxShadow(color: Colors.black.withColorOpacity(0.1), blurRadius: 14, offset: Offset(0, 0))],
+                : [
+                    BoxShadow(
+                      color: Colors.black.withColorOpacity(0.1),
+                      blurRadius: 14,
+                      offset: Offset(0, 0),
+                    ),
+                  ],
           ),
-          child: builder(context),
+          child: SingleChildScrollView(child: builder(context)),
         ),
       ),
     ),

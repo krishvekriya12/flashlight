@@ -1,13 +1,6 @@
 part of '../flash_alert.dart';
 
 class _FlashOnCell extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-  final bool isSelected;
-  final Widget? child;
-
   const _FlashOnCell({
     super.key,
     required this.icon,
@@ -17,80 +10,48 @@ class _FlashOnCell extends StatelessWidget {
     required this.isSelected,
     this.child,
   });
-
+  final IconData icon;
+  final String title;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final bool isSelected;
+  final Widget? child;
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Spacing.medium,
-        vertical: Spacing.medium,
-      ),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? context.colorScheme.onInverseSurface
-            : context.colorScheme.primaryContainer,
-        borderRadius: ShapeBorderRadius.medium,
-        border: Border.all(
-          color: isSelected
-              ? context.colorScheme.primary
-              : Colors.transparent,
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                height: 40,
-                width: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: context.colorScheme.surface.withColorOpacity(.70),
-                  borderRadius: ShapeBorderRadius.small,
-                ),
-                child: Icon(
-                  icon,
-                  color: isSelected
-                      ? context.colorScheme.primary
-                      : context.colorScheme.onSurface.withColorOpacity(.50),
-                  size: 24,
-                ),
+  Widget build(BuildContext context) => ExpressiveSurface(
+    selected: isSelected,
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              width: AppDesign.touchTarget,
+              height: AppDesign.touchTarget,
+              decoration: BoxDecoration(
+                color: context.colorScheme.secondaryContainer,
+                borderRadius: ShapeBorderRadius.normal,
               ),
-
-              Gap(Spacing.medium),
-
-              Expanded(
-                child: Text(
-                  title,
-                  textAlign: TextAlign.left,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textTheme.titleLarge?.copyWith(
-                    color: context.colorScheme.onSurface,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              child: Icon(
+                icon,
+                color: context.colorScheme.onSecondaryContainer,
               ),
-
-              Transform.scale(
-                scale: 0.85,
-                child: CupertinoSwitch(
-                  applyTheme: true,
-                  inactiveTrackColor:
-                  context.colorScheme.onSurface.withColorOpacity(.20),
-                  value: value,
-                  onChanged: onChanged,
-                ),
+            ),
+            const Gap(Spacing.medium),
+            Expanded(child: Text(title, style: context.textTheme.titleMedium)),
+            const Gap(Spacing.small),
+            Semantics(
+              label: title,
+              child: Switch(
+                value: value,
+                onChanged: (next) {
+                  HapticFeedback.selectionClick();
+                  onChanged(next);
+                },
               ),
-            ],
-          ),
-
-          if (child != null) ...[
-            Gap(Spacing.medium),
-            child!,
+            ),
           ],
-        ],
-      ),
-    );
-  }
+        ),
+        if (child != null) ...[const Gap(Spacing.normal), child!],
+      ],
+    ),
+  );
 }

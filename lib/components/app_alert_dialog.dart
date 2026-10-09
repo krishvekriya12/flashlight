@@ -60,8 +60,10 @@ class AppAlertDialog extends StatelessWidget {
                   context.navigator.pop();
                 },
                 child: Text(
-                 " context.l10n.cancel",
-                  style: context.textTheme.labelMedium?.copyWith(color: context.colorScheme.onSurfaceVariant),
+                  context.l10n.cancel,
+                  style: context.textTheme.labelMedium?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
               Gap(Spacing.medium),
@@ -72,7 +74,9 @@ class AppAlertDialog extends StatelessWidget {
                 },
                 child: Text(
                   doneText,
-                  style: context.textTheme.labelMedium?.copyWith(color: context.colorScheme.primary),
+                  style: context.textTheme.labelMedium?.copyWith(
+                    color: context.colorScheme.primary,
+                  ),
                 ),
               ),
             ],

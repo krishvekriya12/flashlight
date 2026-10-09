@@ -1,7 +1,5 @@
-
-
 import 'package:flashlight/data/preference/preference.dart';
-import 'package:flashlight/generated/assets.gen.dart';
+
 import 'package:flashlight/ui/permissions/permissions.dart';
 import 'package:flashlight/utils/enums.dart';
 import 'package:flutter/material.dart';

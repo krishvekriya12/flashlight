@@ -24,9 +24,7 @@ class _NotificationPermissionDialog extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.normal,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.normal),
           child: Center(
             child: Text(
               context.l10n.enableNotificationAccess,
@@ -41,9 +39,7 @@ class _NotificationPermissionDialog extends StatelessWidget {
 
         Gap(Spacing.medium),
 
-        Divider(
-          color: context.colorScheme.outline,
-        ),
+        Divider(color: context.colorScheme.outline),
 
         Gap(Spacing.medium),
 
@@ -58,9 +54,7 @@ class _NotificationPermissionDialog extends StatelessWidget {
         Gap(Spacing.xLarge),
 
         Padding(
-          padding:  EdgeInsets.symmetric(
-            horizontal: Spacing.normal,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: Spacing.normal),
           child: Row(
             children: [
               Expanded(
@@ -68,7 +62,7 @@ class _NotificationPermissionDialog extends StatelessWidget {
                   onPressed: () {
                     context.navigator.pop();
                   },
-                  child:  Text('Later'),
+                  child: Text(context.l10n.later),
                 ),
               ),
 
@@ -81,7 +75,7 @@ class _NotificationPermissionDialog extends StatelessWidget {
 
                     await provider.openNotificationSettings();
                   },
-                  child:  Text('Enable'),
+                  child: Text(context.l10n.enable),
                 ),
               ),
             ],
@@ -92,24 +86,14 @@ class _NotificationPermissionDialog extends StatelessWidget {
   }
 }
 
-
-
-
-
-
-
-
 final class _PermissionDialogProvider extends BaseProvider {
-  _PermissionDialogProvider({
-    required super.context,
-  });
+  _PermissionDialogProvider({required super.context});
 
-  static const MethodChannel _settingsChannel =
-  MethodChannel('flashlight/settings');
+  static const MethodChannel _settingsChannel = MethodChannel(
+    'flashlight/settings',
+  );
 
   Future<void> openNotificationSettings() async {
-    await _settingsChannel.invokeMethod(
-      'openNotificationAccessSettings',
-    );
+    await _settingsChannel.invokeMethod('openNotificationAccessSettings');
   }
 }

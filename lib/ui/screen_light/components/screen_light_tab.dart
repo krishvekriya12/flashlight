@@ -7,14 +7,10 @@ class _ScreenLightTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.read<ScreenLightProvider>();
 
-    return CommonButton.cupertino(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: provider.onToggleControls,
-      child: Stack(
-        children: [
-          _LightSurface(),
-          _ScreenLightControls(),
-        ],
-      ),
+      child: Stack(children: [_LightSurface(), _ScreenLightControls()]),
     );
   }
 }

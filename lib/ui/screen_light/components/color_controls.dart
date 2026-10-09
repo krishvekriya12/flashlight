@@ -5,11 +5,13 @@ class _ColorControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showControls = context.select<ScreenLightProvider, bool>((value) => value.showControls);
+    final showControls = context.select<ScreenLightProvider, bool>(
+      (value) => value.showControls,
+    );
     return Positioned.fill(
       child: AnimatedOpacity(
         opacity: showControls ? 1 : 0,
-        duration: 300.milliseconds,
+        duration: AppMotion.duration(context),
         child: IgnorePointer(
           ignoring: !showControls,
           child: SafeArea(
@@ -26,7 +28,11 @@ class _ColorControls extends StatelessWidget {
                       children: [
                         _TapHint(),
                         Gap(Spacing.small),
-                        GestureDetector(behavior: HitTestBehavior.opaque, onTap: () {}, child: _LightControls()),
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {},
+                          child: _LightControls(),
+                        ),
                         Gap(Spacing.normal),
                       ],
                     ),

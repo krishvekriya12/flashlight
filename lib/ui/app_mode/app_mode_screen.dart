@@ -43,7 +43,7 @@ class AppModeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body:  _Body(),
+      body: _Body(),
     );
   }
 }
@@ -54,10 +54,10 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selectedMode = context.select<AppModeProvider, ThemeMode>(
-          (provider) => provider.selectedMode,
+      (provider) => provider.selectedMode,
     );
 
-    return Padding(
+    return AppContent(
       padding: EdgeInsets.all(Spacing.normal),
       child: Column(
         children: [
@@ -70,9 +70,7 @@ class _Body extends StatelessWidget {
             title: context.l10n.systemDefault,
             isSelected: selectedMode == ThemeMode.system,
             onTap: () {
-              context.read<AppModeProvider>().selectTheme(
-                ThemeMode.system,
-              );
+              context.read<AppModeProvider>().selectTheme(ThemeMode.system);
             },
           ),
           Gap(Spacing.medium),
@@ -85,9 +83,7 @@ class _Body extends StatelessWidget {
             title: context.l10n.lightMode,
             isSelected: selectedMode == ThemeMode.light,
             onTap: () {
-              context.read<AppModeProvider>().selectTheme(
-                ThemeMode.light,
-              );
+              context.read<AppModeProvider>().selectTheme(ThemeMode.light);
             },
           ),
           Gap(Spacing.medium),
@@ -100,9 +96,7 @@ class _Body extends StatelessWidget {
             title: context.l10n.darkMode,
             isSelected: selectedMode == ThemeMode.dark,
             onTap: () {
-              context.read<AppModeProvider>().selectTheme(
-                ThemeMode.dark,
-              );
+              context.read<AppModeProvider>().selectTheme(ThemeMode.dark);
             },
           ),
         ],

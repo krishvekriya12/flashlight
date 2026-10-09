@@ -2,100 +2,87 @@ part of 'stroboscope.dart';
 
 class StroboscopeScreen extends StatelessWidget {
   const StroboscopeScreen({super.key});
-
-  static const String routeName = '/stroboscope';
-
-  static Widget builder(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => StroboscopeProvider(context: context),
-      child: StroboscopeScreen(),
-    );
-  }
-
+  static const routeName = '/stroboscope';
+  static Widget builder(BuildContext context) => ChangeNotifierProvider(
+    create: (context) => StroboscopeProvider(context: context),
+    child: const StroboscopeScreen(),
+  );
   @override
   Widget build(BuildContext context) {
+    final on = context.select<StroboscopeProvider, bool>((p) => p.isFlashOn);
+    final interval = context.select<StroboscopeProvider, double>(
+      (p) => p.flashInterval,
+    );
+    final provider = context.read<StroboscopeProvider>();
     return Scaffold(
-      body: _Body(),
       appBar: FlashLightAppBar(
         showBackButton: false,
         title: context.l10n.tabStroboscope,
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: Spacing.normal),
-            child: Row(
+          IconButton.filledTonal(
+            tooltip: context.l10n.screenLight,
+            onPressed: () =>
+                context.navigator.pushNamed(ScreenLightScreen.routeName),
+            icon: const Icon(Icons.palette_rounded),
+          ),
+          IconButton(
+            tooltip: context.l10n.settings,
+            onPressed: () =>
+                context.navigator.pushNamed(SettingScreen.routeName),
+            icon: const Icon(Icons.settings_rounded),
+          ),
+          const SizedBox(width: Spacing.small),
+        ],
+      ),
+      body: LayoutBuilder(
+        builder: (context, bounds) => AppContent(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: (bounds.maxHeight - Spacing.xxLarge).clamp(
+                0,
+                double.infinity,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CommonButton.cupertino(
-                  onTap: () {
-                    context.navigator.pushNamed(ScreenLightScreen.routeName);
-                  },
-                  child: Assets.icons.icScreenColor.image(height: 24),
+                Text(
+                  context.l10n.tabStroboscope,
+                  style: context.textTheme.displaySmall,
+                  textAlign: TextAlign.center,
                 ),
-                Gap(Spacing.medium),
-                CommonButton.cupertino(
-                  onTap: () {
-                    context.navigator.pushNamed(SettingScreen.routeName);
-                  },
-                  child: Assets.icons.icSetting.svg(
-                    colorFilter: ColorFilter.mode(context.colorScheme.onSurface, BlendMode.srcIn),
-                    height: 24,
+                const Gap(Spacing.xxLarge),
+                LightToggle(
+                  label: context.l10n.tabStroboscope,
+                  active: on,
+                  icon: Icons.flash_on_rounded,
+                  onTap: provider.toggleStrobe,
+                ),
+                const Gap(Spacing.xxLarge),
+                ExpressiveSurface(
+                  selected: on,
+                  child: Column(
+                    children: [
+                      Text(
+                        '${(1000 / interval).toStringAsFixed(1)} Hz',
+                        style: context.textTheme.headlineMedium,
+                      ),
+                      const Gap(Spacing.normal),
+                      AppSlider(
+                        min: 10,
+                        max: 500,
+                        value: 510 - interval,
+                        onChanged: on
+                            ? (value) =>
+                                  provider.changeFlashInterval(510 - value)
+                            : null,
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Body extends StatelessWidget {
-  const _Body();
-
-  @override
-  Widget build(BuildContext context) {
-    final isFlashOn = context.select<StroboscopeProvider, bool>((provider) => provider.isFlashOn);
-    final flashInterval = context.select<StroboscopeProvider, double>((provider) => provider.flashInterval);
-    final provider = context.read<StroboscopeProvider>();
-
-    return Padding(
-      padding: EdgeInsets.all(Spacing.normal),
-      child: SizedBox(
-        width: context.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CommonButton.cupertino(
-              onTap: provider.toggleStrobe,
-              child: isFlashOn
-                  ? Assets.icons.icStroboBtnEnable.svg(height: 200)
-                  : Assets.icons.icStroboBtnDisable.svg(height: 200),
-            ),
-            Gap(Spacing.xxxLarge),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: Spacing.normal, horizontal: Spacing.normal),
-              decoration: BoxDecoration(
-                color: isFlashOn ? context.colorScheme.primaryContainer : context.colorScheme.surface,
-                border: Border.all(
-                  color: isFlashOn ? context.colorScheme.primary : context.colorScheme.primary.withColorOpacity(.50),
-                ),
-                borderRadius: BorderRadius.circular(Spacing.medium),
-              ),
-              child: AppSlider(
-                trackHeight: 5,
-                min: 10,
-                max: 500,
-                thumbRadius: 6,
-                value: 510 - flashInterval,
-                onChanged: isFlashOn
-                    ? (value) {
-                        provider.changeFlashInterval(510 - value);
-                      }
-                    : null,
-              ),
-            ),
-          ],
         ),
       ),
     );

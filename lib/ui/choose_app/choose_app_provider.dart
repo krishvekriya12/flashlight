@@ -1,20 +1,20 @@
 part of 'choose_app.dart';
 
 final class ChooseAppProvider extends BaseProvider {
-  ChooseAppProvider({
-    required super.context,
-  }) {
+  ChooseAppProvider({required super.context}) {
     loadApps();
   }
 
-  static final MethodChannel _settingsChannel =
-  MethodChannel('flashlight/settings');
+  static final MethodChannel _settingsChannel = MethodChannel(
+    'flashlight/settings',
+  );
 
   final List<AppInfo> _apps = <AppInfo>[];
 
   Set<String> _selectedPackages = <String>{};
 
   bool isLoading = true;
+  bool loadFailed = false;
 
   List<AppInfo> get apps {
     final selected = <AppInfo>[];
@@ -28,15 +28,11 @@ final class ChooseAppProvider extends BaseProvider {
       }
     }
 
-    return [
-      ...selected,
-      ...unselected,
-    ];
+    return [...selected, ...unselected];
   }
 
   bool get allSelected {
-    return _apps.isNotEmpty &&
-        _selectedPackages.length == _apps.length;
+    return _apps.isNotEmpty && _selectedPackages.length == _apps.length;
   }
 
   bool isSelected(String packageName) {
@@ -46,10 +42,10 @@ final class ChooseAppProvider extends BaseProvider {
   Future<void> loadApps() async {
     try {
       isLoading = true;
+      loadFailed = false;
       notifyListeners();
 
-      final selected =
-      await _settingsChannel.invokeMethod<List<dynamic>>(
+      final selected = await _settingsChannel.invokeMethod<List<dynamic>>(
         'getSelectedNotificationApps',
       );
 
@@ -57,8 +53,7 @@ final class ChooseAppProvider extends BaseProvider {
           .map((packageName) => packageName.toString())
           .toSet();
 
-      final installedApps =
-      await InstalledApps.getInstalledApps(
+      final installedApps = await InstalledApps.getInstalledApps(
         excludeSystemApps: true,
         excludeNonLaunchableApps: true,
         withIcon: true,
@@ -68,13 +63,11 @@ final class ChooseAppProvider extends BaseProvider {
         ..clear()
         ..addAll(installedApps);
 
-      final installedPackages = _apps
-          .map((app) => app.packageName)
-          .toSet();
+      final installedPackages = _apps.map((app) => app.packageName).toSet();
 
-      _selectedPackages =
-          _selectedPackages.intersection(installedPackages);
+      _selectedPackages = _selectedPackages.intersection(installedPackages);
     } catch (e) {
+      loadFailed = true;
       debugPrint('LOAD APPS ERROR: $e');
     } finally {
       isLoading = false;
@@ -95,12 +88,9 @@ final class ChooseAppProvider extends BaseProvider {
 
     // Save AFTER UI update.
     try {
-      await _settingsChannel.invokeMethod(
-        'setSelectedNotificationApps',
-        {
-          'packages': _selectedPackages.toList(),
-        },
-      );
+      await _settingsChannel.invokeMethod('setSelectedNotificationApps', {
+        'packages': _selectedPackages.toList(),
+      });
     } catch (e) {
       debugPrint('SAVE APP ERROR: $e');
     }
@@ -111,9 +101,7 @@ final class ChooseAppProvider extends BaseProvider {
     if (allSelected) {
       _selectedPackages.clear();
     } else {
-      _selectedPackages = _apps
-          .map((app) => app.packageName)
-          .toSet();
+      _selectedPackages = _apps.map((app) => app.packageName).toSet();
     }
 
     // Instant UI update.
@@ -121,12 +109,9 @@ final class ChooseAppProvider extends BaseProvider {
 
     // Save AFTER UI update.
     try {
-      await _settingsChannel.invokeMethod(
-        'setSelectedNotificationApps',
-        {
-          'packages': _selectedPackages.toList(),
-        },
-      );
+      await _settingsChannel.invokeMethod('setSelectedNotificationApps', {
+        'packages': _selectedPackages.toList(),
+      });
     } catch (e) {
       debugPrint('SAVE ALL APPS ERROR: $e');
     }

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'generated/l10n.dart';
+import 'utils/system_color_provider.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -17,20 +18,22 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => LocalizationProvider(),
-        ),
+        ChangeNotifierProvider(create: (_) => SystemColorProvider()),
+        ChangeNotifierProvider(create: (_) => LocalizationProvider()),
         ChangeNotifierProvider(
           create: (_) => AppModeProvider(context: context),
         ),
       ],
       builder: (context, child) {
         final local = context.select<LocalizationProvider, Locale?>(
-              (provider) => provider.local,
+          (provider) => provider.local,
         );
 
         final themeMode = context.select<AppModeProvider, ThemeMode>(
-              (provider) => provider.themeMode,
+          (provider) => provider.themeMode,
+        );
+        final seed = context.select<SystemColorProvider, Color?>(
+          (provider) => provider.seed,
         );
 
         return GestureDetector(
@@ -38,13 +41,13 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             themeMode: themeMode,
-            theme: lightTheme,
-            darkTheme: darkTheme,
+            theme: expressiveTheme(brightness: Brightness.light, seed: seed),
+            darkTheme: expressiveTheme(brightness: Brightness.dark, seed: seed),
             locale: local,
 
             supportedLocales: S.delegate.supportedLocales,
 
-            localizationsDelegates:  [
+            localizationsDelegates: [
               S.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -54,12 +57,7 @@ class MyApp extends StatelessWidget {
             builder: (context, child) {
               final mediaQuery = MediaQuery.of(context);
               return MediaQuery(
-                data: mediaQuery.copyWith(
-                  textScaler: mediaQuery.textScaler.clamp(
-                    minScaleFactor: 0.8,
-                    maxScaleFactor: 1.15,
-                  ),
-                ),
+                data: mediaQuery.copyWith(textScaler: mediaQuery.textScaler),
                 child: child!,
               );
             },
@@ -72,4 +70,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

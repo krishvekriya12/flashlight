@@ -8,10 +8,8 @@ class _PermissionDialog extends StatelessWidget {
       context: context,
       builder: (context) {
         return ChangeNotifierProvider(
-          create: (context) => _PermissionDialogProvider(
-            context: context,
-          ),
-          child:  _PermissionDialog(),
+          create: (context) => _PermissionDialogProvider(context: context),
+          child: _PermissionDialog(),
         );
       },
     );
@@ -84,35 +82,59 @@ class _PermissionsCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return CommonButton.cupertino(
       onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: context.textTheme.titleMedium?.copyWith(
-              color: context.colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
+      child: Container(
+        width: context.width,
+        padding: EdgeInsets.symmetric(
+          horizontal: Spacing.normal,
+          vertical: Spacing.medium,
+        ),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainer,
+          borderRadius: ShapeBorderRadius.xxLarge,
+          border: Border.all(
+            color: context.colorScheme.outlineVariant.withColorOpacity(0.5),
+            width: 1.0,
           ),
-          Gap(Spacing.xSmall),
-          Text(
-            subtitle,
-            style: context.textTheme.bodySmall?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w400,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: context.colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Gap(Spacing.xSmall),
+                  Text(
+                    subtitle,
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Gap(Spacing.small),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: context.colorScheme.onSurfaceVariant.withColorOpacity(0.7),
+              size: 22,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 final class _PermissionDialogProvider extends BaseProvider {
-  _PermissionDialogProvider({
-    required super.context,
-  });
-
+  _PermissionDialogProvider({required super.context});
 
   Future<void> requestNotificationPermission() async {
     final status = await Permission.notification.request();
@@ -142,11 +164,9 @@ final class _PermissionDialogProvider extends BaseProvider {
   }
 
   Future<void> requestPermissions() async {
-    final notificationStatus =
-    await Permission.notification.request();
+    final notificationStatus = await Permission.notification.request();
 
-    final phoneStatus =
-    await Permission.phone.request();
+    final phoneStatus = await Permission.phone.request();
 
     if (notificationStatus.isPermanentlyDenied ||
         phoneStatus.isPermanentlyDenied) {
@@ -156,13 +176,11 @@ final class _PermissionDialogProvider extends BaseProvider {
       return;
     }
 
-    final overlayGranted =
-    await Permission.systemAlertWindow.isGranted;
+    final overlayGranted = await Permission.systemAlertWindow.isGranted;
     if (!overlayGranted) {
       await Permission.systemAlertWindow.request();
 
-      final grantedAfterRequest =
-      await Permission.systemAlertWindow.isGranted;
+      final grantedAfterRequest = await Permission.systemAlertWindow.isGranted;
 
       if (!grantedAfterRequest) {
         if (!context.mounted) return;
@@ -172,30 +190,23 @@ final class _PermissionDialogProvider extends BaseProvider {
       }
     }
 
-    final notificationGranted =
-    await Permission.notification.isGranted;
+    final notificationGranted = await Permission.notification.isGranted;
 
-    final phoneGranted =
-    await Permission.phone.isGranted;
+    final phoneGranted = await Permission.phone.isGranted;
 
-    final finalOverlayGranted =
-    await Permission.systemAlertWindow.isGranted;
+    final finalOverlayGranted = await Permission.systemAlertWindow.isGranted;
 
-    if (notificationGranted &&
-        phoneGranted &&
-        finalOverlayGranted) {
+    if (notificationGranted && phoneGranted && finalOverlayGranted) {
       if (!context.mounted) return;
 
       context.navigator.pushNamedAndRemoveUntil(
         DashboardScreen.routeName,
-            (route) => false,
+        (route) => false,
       );
 
       return;
     }
 
-    debugPrint(
-      'Required permissions were not granted.',
-    );
+    debugPrint('Required permissions were not granted.');
   }
 }

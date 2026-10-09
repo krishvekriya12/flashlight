@@ -17,6 +17,11 @@ class Preference {
     prefs = await SharedPreferences.getInstance();
   }
 
+  Future<void> completeLanguageSelection(AppLanguage language) async {
+    await prefs?.setString(PreferenceKeys.appLanguage, language.value);
+    await prefs?.setBool(PreferenceKeys.languageSelected, true);
+  }
+
   AppLanguage get appLanguage {
     final value = prefs?.getString(PreferenceKeys.appLanguage);
 
@@ -42,7 +47,8 @@ class Preference {
   }
 
   int get screenLightColor {
-    return prefs?.getInt(PreferenceKeys.screenLightColor) ?? AppConstant.screenLightDefaultColor;
+    return prefs?.getInt(PreferenceKeys.screenLightColor) ??
+        AppConstant.screenLightDefaultColor;
   }
 
   set screenLightColor(int value) {
@@ -50,7 +56,8 @@ class Preference {
   }
 
   int get screenLightPresetIndex {
-    return prefs?.getInt(PreferenceKeys.screenLightPresetIndex) ?? AppConstant.screenLightCustomIndex;
+    return prefs?.getInt(PreferenceKeys.screenLightPresetIndex) ??
+        AppConstant.screenLightCustomIndex;
   }
 
   set screenLightPresetIndex(int value) {

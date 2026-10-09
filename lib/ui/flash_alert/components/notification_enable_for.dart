@@ -2,59 +2,41 @@ part of '../flash_alert.dart';
 
 class _NotificationEnableFor extends StatelessWidget {
   const _NotificationEnableFor({super.key});
-
   @override
   Widget build(BuildContext context) {
-    final provider = context.read<FlashAlertProvider>();
-    final enableForRing = context.select<FlashAlertProvider, bool>((value) => value.enableForRing);
-    final enableForVibrate = context.select<FlashAlertProvider, bool>((value) => value.enableForVibrate);
-    final enableForSilent = context.select<FlashAlertProvider, bool>((value) => value.enableForSilent);
+    final p = context.watch<FlashAlertProvider>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          context.l10n.enableFor,
-          style: context.textTheme.titleMedium?.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.2,
-          ),
-        ),
-        Gap(Spacing.small),
-        Divider(color: context.colorScheme.onSurfaceVariant.withColorOpacity(.70)),
-        Gap(Spacing.medium),
+        Text(context.l10n.enableFor, style: context.textTheme.titleLarge),
+        const Gap(Spacing.normal),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: _EnableCell(
-                isSelected: enableForRing,
-                icon: CupertinoIcons.volume_up,
+                isSelected: p.enableForRing,
+                icon: Icons.volume_up_rounded,
                 title: context.l10n.ring,
-                onTap: () {
-                  provider.toggleEnableForRing(!enableForRing);
-                },
+                onTap: () => p.toggleEnableForRing(!p.enableForRing),
               ),
             ),
-            Gap(Spacing.small),
+            const Gap(Spacing.small),
             Expanded(
               child: _EnableCell(
-                isSelected: enableForVibrate,
-                icon: Icons.vibration,
+                isSelected: p.enableForVibrate,
+                icon: Icons.vibration_rounded,
                 title: context.l10n.vibrate,
-                onTap: () {
-                  provider.toggleEnableForVibrate(!enableForVibrate);
-                },
+                onTap: () => p.toggleEnableForVibrate(!p.enableForVibrate),
               ),
             ),
-            Gap(Spacing.small),
+            const Gap(Spacing.small),
             Expanded(
               child: _EnableCell(
-                isSelected: enableForSilent,
-                icon: CupertinoIcons.volume_off,
+                isSelected: p.enableForSilent,
+                icon: Icons.volume_off_rounded,
                 title: context.l10n.silent,
-                onTap: () {
-                  provider.toggleEnableForSilent(!enableForSilent);
-                },
+                onTap: () => p.toggleEnableForSilent(!p.enableForSilent),
               ),
             ),
           ],
@@ -65,54 +47,46 @@ class _NotificationEnableFor extends StatelessWidget {
 }
 
 class _EnableCell extends StatelessWidget {
+  const _EnableCell({
+    super.key,
+    required this.isSelected,
+    required this.icon,
+    required this.title,
+    this.onTap,
+  });
   final bool isSelected;
   final IconData icon;
   final String title;
   final VoidCallback? onTap;
-
-  const _EnableCell({super.key, required this.isSelected, required this.icon, required this.title, this.onTap});
-
   @override
-  Widget build(BuildContext context) {
-    return CommonButton.cupertino(
+  Widget build(BuildContext context) => Semantics(
+    toggled: isSelected,
+    child: CommonButton.cupertino(
       onTap: onTap,
-      child: Container(
-        width: context.width,
-        padding: EdgeInsets.symmetric(vertical: Spacing.large),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? context.colorScheme.onInverseSurface
-              : context.colorScheme.primaryContainer,
-          borderRadius: ShapeBorderRadius.medium,
-          border: isSelected ? Border.all(color: context.colorScheme.primary) : null,
+      child: ExpressiveSurface(
+        selected: isSelected,
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.small,
+          vertical: Spacing.normal,
         ),
         child: Column(
           children: [
-            Container(
-              height: 44,
-              width: 44,
-              padding: EdgeInsets.all(Spacing.xSmall),
-              decoration: BoxDecoration(
-                color: context.colorScheme.surface.withColorOpacity(.70),
-                borderRadius: ShapeBorderRadius.small,
-              ),
-              child: Icon(
-                icon,
-                color: isSelected ? context.colorScheme.primary : context.colorScheme.onSurface.withColorOpacity(.50),
-                size: 24,
-              ),
+            Icon(
+              icon,
+              color: isSelected
+                  ? context.colorScheme.onPrimaryContainer
+                  : context.colorScheme.onSurfaceVariant,
+              size: AppDesign.iconSize,
             ),
-            Gap(Spacing.medium),
+            const Gap(Spacing.normal),
             Text(
               title,
-              style: context.textTheme.titleSmall?.copyWith(
-                color: context.colorScheme.onSurface,
-                fontWeight: FontWeight.w600,
-              ),
+              textAlign: TextAlign.center,
+              style: context.textTheme.labelLarge,
             ),
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }

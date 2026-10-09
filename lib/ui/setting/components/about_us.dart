@@ -2,124 +2,70 @@ part of '../setting.dart';
 
 class _AboutUS extends StatelessWidget {
   const _AboutUS({super.key});
-
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(context.l10n.aboutUs, style: context.textTheme.titleLarge),
+      const Gap(Spacing.normal),
+      _AboutLink(
+        icon: Icons.share_rounded,
+        title: context.l10n.shareApp,
+        onTap: () async => SharePlus.instance.share(
+          ShareParams(
+            text: '${context.l10n.appName}: ${AppConstant.playStoreUrl}',
+          ),
+        ),
+      ),
+      const Gap(Spacing.small),
+      _AboutLink(
+        icon: Icons.star_rounded,
+        title: context.l10n.rateUs,
+        onTap: () => CommonFunctions.openUrl(url: AppConstant.playStoreUrl),
+      ),
+      const Gap(Spacing.small),
+      _AboutLink(
+        icon: Icons.privacy_tip_outlined,
+        title: context.l10n.privacyPolicy,
+        onTap: () => context.navigator.pushNamed(PrivacyPolicyScreen.routeName),
+      ),
+      const Gap(Spacing.small),
+      _AboutLink(
+        icon: Icons.apps_rounded,
+        title: context.l10n.otherApps,
+        onTap: () => context.navigator.pushNamed(MoreAppsScreen.routeName),
+      ),
+    ],
+  );
+}
+
+class _AboutLink extends StatelessWidget {
+  const _AboutLink({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) => _SettingCell(
+    onTap: onTap,
+    child: Row(
       children: [
-        Text(
-          context.l10n.aboutUs,
-          style: context.textTheme.titleSmall?.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.2,
-          ),
+        Icon(
+          icon,
+          color: context.colorScheme.primary,
+          size: AppDesign.iconSize,
         ),
-        Gap(Spacing.medium),
-        _SettingCell(
-          onTap: () async {
-            await SharePlus.instance.share(
-              ShareParams(
-                text:
-                    "Download Flashlight App: https://play.google.com/store/apps/details?id=com.flashlight.flashlight",
-              ),
-            );
-          },
-          child: Row(
-            children: [
-              Icon(Icons.share, color: context.colorScheme.primary, size: 24),
-              Gap(Spacing.medium),
-              Text(
-                context.l10n.shareApp,
-                style: context.textTheme.titleMedium?.copyWith(
-                  color: context.colorScheme.onSurface,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Gap(Spacing.medium),
-        _SettingCell(
-          onTap: () {
-            CommonFunctions.openUrl(
-              url:
-                  "https://play.google.com/store/apps/details?id=com.flashlight.flashlight",
-            );
-          },
-          child: Row(
-            children: [
-              Icon(
-                Icons.star_rate_rounded,
-                color: context.colorScheme.primary,
-                size: 24,
-              ),
-              Gap(Spacing.medium),
-              Text(
-                context.l10n.rateUs,
-                style: context.textTheme.titleMedium?.copyWith(
-                  color: context.colorScheme.onSurface,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Gap(Spacing.medium),
-        _SettingCell(
-          onTap: () {
-            context.navigator.pushNamed(PrivacyPolicyScreen.routeName);
-          },
-          child: Row(
-            children: [
-              Icon(
-                Icons.privacy_tip,
-                color: context.colorScheme.primary,
-                size: 22,
-              ),
-              Gap(Spacing.medium),
-              Text(
-                context.l10n.privacyPolicy,
-                style: context.textTheme.titleMedium?.copyWith(
-                  color: context.colorScheme.onSurface,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Gap(Spacing.medium),
-        _SettingCell(
-          onTap: () {
-            context.navigator.pushNamed(MoreAppsScreen.routeName);
-          },
-          child: Row(
-            children: [
-              Icon(
-                Icons.apps_rounded,
-                color: context.colorScheme.primary,
-                size: 24,
-              ),
-              Gap(Spacing.medium),
-              Expanded(
-                child: Text(
-                  context.l10n.otherApps,
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: context.colorScheme.onSurface,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: context.colorScheme.onSurfaceVariant,
-                size: 24,
-              ),
-            ],
-          ),
+        const Gap(Spacing.normal),
+        Expanded(child: Text(title, style: context.textTheme.titleMedium)),
+        const Gap(Spacing.small),
+        Icon(
+          Icons.chevron_right_rounded,
+          color: context.colorScheme.onSurfaceVariant,
         ),
       ],
-    );
-  }
+    ),
+  );
 }

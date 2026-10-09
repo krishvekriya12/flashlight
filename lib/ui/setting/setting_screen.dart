@@ -2,83 +2,67 @@ part of 'setting.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
-
-  static const String routeName = '/setting';
-
-  static Widget builder(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => SettingProvider(context: context),
-      child: SettingScreen(),
-    );
-  }
-
+  static const routeName = '/setting';
+  static Widget builder(BuildContext context) => ChangeNotifierProvider(
+    create: (context) => SettingProvider(context: context),
+    child: const SettingScreen(),
+  );
   @override
   Widget build(BuildContext context) {
+    final version = context.select<SettingProvider, String>(
+      (p) => p.appVersion,
+    );
     return Scaffold(
-      body: _Body(),
       appBar: FlashLightAppBar(
         title: context.l10n.settings,
         showBackButton: true,
-
       ),
-      bottomNavigationBar: Builder(
-        builder: (context) {
-          final appVersion = context.select<SettingProvider, String>(
-            (provider) => provider.appVersion,
-          );
-          return Container(
-            height: 100,
-            width: context.width,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(color: context.colorScheme.surface),
-            child: Text(
-              context.l10n.appVersion(appVersion),
-              style: context.textTheme.labelMedium?.copyWith(
-                color: context.colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w400,
+      body: AppContent(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ExpressiveSurface(
+              hero: true,
+              selected: true,
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.tune_rounded,
+                    size: AppDesign.touchTarget,
+                    color: context.colorScheme.onPrimaryContainer,
+                  ),
+                  const Gap(Spacing.normal),
+                  Text(
+                    context.l10n.settings,
+                    style: context.textTheme.headlineMedium,
+                  ),
+                ],
               ),
             ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _Body extends StatelessWidget {
-  const _Body({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(Spacing.normal),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _Personalization(),
-          Gap(Spacing.normal),
-          _AboutUS(),
-        ],
+            const Gap(Spacing.xLarge),
+            const _Personalization(),
+            const Gap(Spacing.xLarge),
+            const _AboutUS(),
+            const Gap(Spacing.xxLarge),
+            Text(
+              context.l10n.appVersion(version),
+              style: context.textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class _SettingCell extends StatelessWidget {
+  const _SettingCell({super.key, required this.onTap, required this.child});
   final VoidCallback onTap;
   final Widget child;
-
-  const _SettingCell({super.key, required this.onTap, required this.child});
-
   @override
-  Widget build(BuildContext context) {
-    return CommonButton.cupertino(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Spacing.normal, horizontal: Spacing.normal),
-        decoration: BoxDecoration(color: context.colorScheme.primaryContainer, borderRadius: ShapeBorderRadius.medium),
-        child: child,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => CommonButton.cupertino(
+    onTap: onTap,
+    child: ExpressiveSurface(child: child),
+  );
 }

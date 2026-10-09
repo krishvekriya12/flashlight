@@ -16,7 +16,7 @@ val releaseSigningConfigured = listOf("storeFile", "storePassword", "keyAlias", 
     .all { !releaseKeystoreProperties.getProperty(it).isNullOrBlank() }
 
 android {
-    namespace = "com.flashlight.flashlight"
+    namespace = "com.setubandhTech.flashlight"
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
@@ -27,7 +27,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.flashlight.flashlight"
+        applicationId = "com.setubandhTech.flashlight"
 
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion

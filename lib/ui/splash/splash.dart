@@ -1,6 +1,6 @@
 import 'package:flashlight/core/core.dart';
 import 'package:flashlight/data/preference/preference.dart';
-import 'package:flashlight/generated/assets.gen.dart';
+
 import 'package:flashlight/resource/resource.dart';
 import 'package:flashlight/ui/dashboard/dashboard.dart';
 import 'package:flashlight/ui/language_selection/language_selection.dart';

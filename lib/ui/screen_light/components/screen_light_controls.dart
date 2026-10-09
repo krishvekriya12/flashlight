@@ -1,4 +1,5 @@
 part of '../screen_light.dart';
+
 class _ScreenLightControls extends StatelessWidget {
   const _ScreenLightControls();
 
@@ -6,14 +7,18 @@ class _ScreenLightControls extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.read<ScreenLightProvider>();
 
-    final blinkProgress = context.select<ScreenLightProvider, int>((provider) => provider.blinkProgress);
+    final blinkProgress = context.select<ScreenLightProvider, int>(
+      (provider) => provider.blinkProgress,
+    );
 
-    final showControls = context.select<ScreenLightProvider, bool>((provider) => provider.showControls);
+    final showControls = context.select<ScreenLightProvider, bool>(
+      (provider) => provider.showControls,
+    );
 
     return Positioned.fill(
       child: AnimatedOpacity(
         opacity: showControls ? 1 : 0,
-        duration: 300.milliseconds,
+        duration: AppMotion.duration(context),
         child: IgnorePointer(
           ignoring: !showControls,
           child: SafeArea(
@@ -39,11 +44,19 @@ class _ScreenLightControls extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.flash_off_rounded, size: 28, color: context.colorScheme.onSurface),
-                           Spacer(),
+                          Icon(
+                            Icons.flash_off_rounded,
+                            size: 28,
+                            color: context.colorScheme.onSurface,
+                          ),
+                          Spacer(),
                           CommonButton.icon(
                             onTap: provider.onToggleControls,
-                            child: Icon(Icons.close_rounded, size: 28, color: context.colorScheme.onSurface),
+                            child: Icon(
+                              Icons.close_rounded,
+                              size: 28,
+                              color: context.colorScheme.onSurface,
+                            ),
                           ),
                         ],
                       ),

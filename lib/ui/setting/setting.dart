@@ -5,6 +5,7 @@ import 'package:flashlight/ui/app_mode/app_mode.dart';
 import 'package:flashlight/ui/language_selection/language_selection.dart';
 import 'package:flashlight/ui/more_apps/more_apps.dart';
 import 'package:flashlight/ui/privacy_policy/privacy_policy_screen.dart';
+import 'package:flashlight/utils/app_constants.dart';
 import 'package:flashlight/utils/common_button.dart';
 import 'package:flashlight/utils/common_func.dart';
 import 'package:flutter/material.dart';

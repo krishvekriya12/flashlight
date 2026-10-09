@@ -28,10 +28,16 @@ final class LanguageSelectionProvider extends BaseProvider {
     if (selectedLanguage == null) return;
     isLoading = true;
     notifyListeners();
+    // A language preview is not a completed first-run choice.
+    await preference.completeLanguageSelection(selectedLanguage!);
+    if (!context.mounted) return;
     if (isSetting == true) {
       context.navigator.pop();
     } else {
-      context.navigator.pushNamedAndRemoveUntil(PermissionsScreen.routeName, (route) => false);
+      context.navigator.pushNamedAndRemoveUntil(
+        PermissionsScreen.routeName,
+        (route) => false,
+      );
     }
   }
 
@@ -50,7 +56,6 @@ final class LanguageSelectionProvider extends BaseProvider {
 
     Preference().appLanguage = language;
     context.read<LocalizationProvider>().changeLanguage(language);
-    Preference().languageSelected = true;
 
     notifyListeners();
   }

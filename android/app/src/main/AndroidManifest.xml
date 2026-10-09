@@ -30,6 +30,7 @@
     <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
 
     <application
+        android:enableOnBackInvokedCallback="true"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:label="Flashlight">

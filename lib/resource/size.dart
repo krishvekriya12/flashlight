@@ -6,10 +6,10 @@ abstract interface class Spacing {
   static const double small = 8;
   static const double medium = 12;
   static const double normal = 16;
-  static const double large = 20;
+  static const double large = 24;
   static const double xLarge = 24;
   static const double xxLarge = 32;
-  static const double xxxLarge = 36;
+  static const double xxxLarge = 48;
 }
 
 abstract interface class RadiusValues {
@@ -33,5 +33,3 @@ abstract interface class ShapeBorderRadius {
   static const BorderRadius xLarge = BorderRadius.all(RadiusValues.xLarge);
   static const BorderRadius xxLarge = BorderRadius.all(RadiusValues.xxLarge);
 }
-
-
